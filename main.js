@@ -1,9 +1,13 @@
 const holes = document.querySelectorAll('.hole');
 const scoreBoard = document.querySelector('.score');
 const moles = document.querySelectorAll('.mole');
+let hScore = document.querySelector('.highScoreBoard');
 let lastHole;
 let timeUp = false;
 let score = 0;
+let highScore = localStorage.getItem('hScore') || 0;
+hScore.textContent = highScore;
+
 
 function randomTime(min, max) {
     return (Math.random() * (max - min) + min);
@@ -45,21 +49,33 @@ function startGameExpert() {
     peepExpert();
     score = 0;
     setTimeout(() => timeUp = true, 10000);
+
 }
+
+
 
 function startGame() {
     scoreBoard.textContent = 0;
     timeUp = false;
     peep();
     score = 0;
+    hScore.textContent = localStorage.getItem('hScore', highScore) || 0;
     setTimeout(() => timeUp = true, 10000);
+
 }
 
-function bonk(e) {
-    if (!e.isTrusted) return;
-    score++;
-    this.classList.remove('up');
-    scoreBoard.textContent = score;
-}
+    function bonk(e) {
+        if (!e.isTrusted) return;
+        score++;
+        this.classList.remove('up');
+        scoreBoard.textContent = score;
+        if (score >= highScore) {
+            highScore = score;
+            localStorage.setItem('hScore', highScore);
+            hScore.textContent = localStorage.getItem('hScore', highScore);
+          }
+        }
 
-moles.forEach(mole => mole.addEventListener('click', bonk));
+    
+
+    moles.forEach(mole => mole.addEventListener('click', bonk));
